@@ -1,0 +1,26 @@
+{
+  "name": "promise-abortable",
+  "version": "1.0.0",
+  "description": "A Promise lib for abortable.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "mocha"
+  },
+  "keywords": [
+    "promise",
+    "abort"
+  ],
+  "author": "dondevi",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "eslint": "^6.0.0",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-eslint": "^6.0.0",
+    "rollup-plugin-uglify": "^6.0.2"
+  }
+}
