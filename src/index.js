@@ -68,6 +68,7 @@ export default class AbortablePromise extends Promise {
     return new AbortablePromise((resolve, reject, signal) => {
       signal.onabort = reason => {
         aborts.forEach(abort => abort(reason).catch(reject));
+        reject(reason);
       }
       promises.forEach((promise, index) => {
         if (promise instanceof AbortablePromise) {
@@ -86,6 +87,7 @@ export default class AbortablePromise extends Promise {
     return new AbortablePromise((resolve, reject, signal) => {
       signal.onabort = reason => {
         aborts.forEach(abort => abort(reason).catch(reject));
+        reject(reason);
       }
       promises.forEach(promise => {
         if (promise instanceof AbortablePromise) {

@@ -1,14 +1,201 @@
 # promise-abortable
 
-## Usage
+
+
+## Basic Usage
 
 ```javascript
 const promise = new AbortablePromise((resolve, reject, signal) => {
-  const xhr = ...;
-  signal.onabort = reason => xhr.abort(reson);
+  signal.onabort = reason => {};  // reason from abort(reason)
 });
 
-...
+promise.abort(reason);  // execute signal.onabort(reason)
+```
 
-promise.abort();
+
+
+## Basic Examples
+
+### Abort Promise
+
+```javascript
+const promise1 = new AbortablePromise((resolve, reject, signal) => {
+  setTimeout(resolve, 1000, "resolve");
+  signal.onabort = reject;
+});
+
+const promise2 = promise1.then(value => {
+  console.log(value);  // no execute
+}).catch(reason => {
+  console.log(reason);  // output "abort promise"
+});
+
+promise1.abort("abort promise");
+// or
+promise2.abort("abort promise");
+```
+
+
+### Abort AJAX
+
+```javascript
+const promise = new AbortablePromise((resolve, reject, signal) => {
+  const url = ``;
+  const xhr = $.ajax({ url, success: resolve, error: reject });
+  signal.onabort = xhr.abort;
+});
+
+promise.then(value => {
+  console.log(value);  // no execute
+}).catch(reason => {
+  console.log(reason);  // output "abort ajax"
+});
+
+promise.abort("abort ajax");
+```
+
+
+
+## More Examples
+
+```javascript
+/**
+ * Timeout Promise: resolved after delay, abortable
+ *
+ * @param {*}      value
+ * @param {Number} delay
+ */
+function AbortableDelay (value, delay = 0) {
+  return new AbortablePromise((resolve, reject, signal) => {
+    setTimeout(resolve, delay, value);
+    signal.onabort = reject;
+  });
+}
+```
+
+
+### Duplicate abort
+
+```javascript
+const promise = AbortableDelay("resolve", 1000);
+
+promise.catch(reason => {
+  console.log(reason);  // output "abort 1"
+});
+
+promise.abort("abort 1").abort("abort 2");
+```
+
+
+### Nesting abort
+
+```javascript
+const promise1 = AbortableDelay("resolve at 1s", 1000);
+const promise2 = AbortableDelay("resolve at 2s", 2000);
+const promise3 = AbortableDelay("resolve at 3s", 3000);
+const promise4 = AbortableDelay("resolve at 4s", 4000);
+
+promise1.then(value => {
+  console.log(value);  // output "resolve at 1s"
+  return promise2;
+}).catch(reason => {
+  console.log(reason);  // output "abort at 1.5s"
+  return promise3;
+}).then(value => {
+  console.log(value);  // output "resolve at 3s"
+  return promise4;
+}).catch(reason => {
+  console.log(reason);  // output "abort at 3.5s"
+});
+
+setTimeout(() => {
+  promise1.abort("abort at 1.5s");
+}, 1500);
+
+setTimeout(() => {
+  promise1.abort("abort at 3.5s");
+}, 3500);
+```
+
+
+### Promise after abort
+
+```javascript
+const promise = AbortableDelay("resolve", 1000);
+
+const promise1 = promise.catch(reason => {
+  console.log(reason);  // output "abort"
+  return "catch abort 1";
+});
+
+const promise2 = promise.catch(reason => {
+  console.log(reason);  // output "abort"
+  return "catch abort 2";
+});
+
+promise1.abort("abort").then(value => {
+  console.log(value);  // output "catch abort 1"
+});
+```
+
+
+### Promise.all abort
+
+```javascript
+const promise1 = AbortableDelay("resolve at 1s", 1000);
+const promise2 = AbortableDelay("resolve at 2s", 2000);
+const promiseAll = AbortablePromise.all([promise1, promise2]);
+
+promise1.then(value => {
+  console.log(value);  // ouput "resolve at 1s"
+}).catch(reason => {
+  console.log(reason);  // no execute
+});
+
+promise2.then(value => {
+  console.log(value);  // no execute
+}).catch(reason => {
+  console.log(reason);  // output "abort all at 1.5"
+});
+
+promiseAll.then(value => {
+  console.log(value);  // no execute
+}).catch(reason => {
+  console.log(reason);  // output "abort all at 1.5"
+});
+
+setTimeout(() => {
+  promiseAll.abort("abort all at 1.5");
+}, 1500);
+```
+
+
+### Promise.race abort
+
+```javascript
+const promise1 = AbortableDelay("resolve at 1s", 1000);
+const promise2 = AbortableDelay("resolve at 2s", 2000);
+const promiseRace = AbortablePromise.race([promise1, promise2]);
+
+promise1.then(value => {
+  console.log(value);  // ouput "resolve at 1s"
+}).catch(reason => {
+  console.log(reason);  // no execute
+});
+
+promise2.then(value => {
+  console.log(value);  // no execute
+}).catch(reason => {
+  console.log(reason);  // output "abort race at 1.5"
+});
+
+promiseRace.then(value => {
+  console.log(value);  // output "resolve at 1s"
+}).catch(reason => {
+  console.log(reason);  // no execute
+});
+
+setTimeout(() => {
+  promiseRace.abort("abort race at 1.5");
+}, 1500);
 ```
