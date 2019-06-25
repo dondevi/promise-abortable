@@ -1,5 +1,6 @@
 # promise-abortable
 
+Promise lib for abortable.
 
 
 ## Basic Usage
@@ -40,18 +41,58 @@ promise2.abort("abort promise");
 
 ```javascript
 const promise = new AbortablePromise((resolve, reject, signal) => {
-  const url = ``;
+  const url = `/`;
   const xhr = $.ajax({ url, success: resolve, error: reject });
-  signal.onabort = xhr.abort;
+  signal.onabort = xhr.abort.bind(xhr);
 });
 
-promise.then(value => {
-  console.log(value);  // no execute
-}).catch(reason => {
-  console.log(reason);  // output "abort ajax"
+promise.then(data => {
+  console.log(data);  // no execute
+}).catch(xhr => {
+  console.log(xhr);  // output `{ ... statusText: "abort ajax" }`
 });
 
 promise.abort("abort ajax");
+```
+
+
+### Abort axios
+
+```javascript
+const promise = new AbortablePromise((resolve, reject, signal) => {
+  const url = `/`;
+  const source = axios.CancelToken.source();
+  axios({ url, cancelToken: source.token }).then(resolve, reject);
+  signal.onabort = source.cancel.bind(source);
+});
+
+promise.then(response => {
+  console.log(response);  // no execute
+}).catch(error => {
+  console.log(error);  // output `{ message: "abort axios" }`
+});
+
+promise.abort("abort axios");
+```
+
+
+### Abort fetch
+
+```javascript
+const promise = new AbortablePromise((resolve, reject, signal) => {
+  const url = `/`;
+  const controller = new AbortController();
+  fetch(url, { signal: controller.signal }).then(resolve, reject);
+  signal.onabort = controller.abort.bind(controller);
+});
+
+promise.then(response => {
+  console.log(response);  // no execute
+}).catch(error => {
+  console.log(error);  // output `DOMException`
+});
+
+promise.abort("abort fetch");
 ```
 
 
