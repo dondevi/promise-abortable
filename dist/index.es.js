@@ -1,8 +1,9 @@
-'use strict';
-
-require('core-js/modules/es6.promise');
-require('core-js/modules/es6.object.to-string');
-require('core-js/modules/es6.object.assign');
+import 'core-js/modules/web.dom.iterable';
+import 'core-js/modules/es6.array.iterator';
+import 'core-js/modules/es6.string.iterator';
+import 'core-js/modules/es6.promise';
+import 'core-js/modules/es6.object.to-string';
+import 'core-js/modules/es6.object.assign';
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -172,20 +173,7 @@ function _get(target, property, receiver) {
 }
 
 /**
- * =============================================================================
  * Abortable Promise
- * =============================================================================
- * @class AbortablePromise
- * @requires Promise
- *
- * @usage
- *   const promise = new AbortablePromise((resolve, reject, signal) => {
- *     const xhr = ...;
- *     signal.onabort = reason => xhr.abort(reson);
- *   });
- *   ...
- *   promise.abort();
- * =============================================================================
  *
  * @author dondevi
  * @create 2019-05-27
@@ -254,60 +242,46 @@ function (_Promise) {
         });
       }, this.abortController);
     }
-  }], [{
-    key: "all",
-    value: function all(promises) {
-      var values = [];
-      var aborts = [];
-      var length = promises.length;
-      return new AbortablePromise(function (resolve, reject, signal) {
-        signal.onabort = function (reason) {
-          aborts.forEach(function (abort) {
-            return abort(reason).catch(reject);
-          });
-        };
-
-        promises.forEach(function (promise, index) {
-          if (promise instanceof AbortablePromise) {
-            aborts.push(promise.abort.bind(promise));
-          }
-
-          promise.then(function (value) {
-            values[index] = value;
-            0 === --length && resolve(values);
-          }, reject);
-        });
-      });
-    }
-  }, {
-    key: "race",
-    value: function race(promises) {
-      var aborts = [];
-      return new AbortablePromise(function (resolve, reject, signal) {
-        signal.onabort = function (reason) {
-          aborts.forEach(function (abort) {
-            return abort(reason).catch(reject);
-          });
-        };
-
-        promises.forEach(function (promise) {
-          if (promise instanceof AbortablePromise) {
-            aborts.push(promise.abort.bind(promise));
-          }
-
-          promise.then(resolve, reject);
-        });
-      });
-    }
   }]);
 
   return AbortablePromise;
 }(_wrapNativeSuper(Promise));
+
+AbortablePromise.all = function (promises) {
+  return new AbortablePromise(function (resolve, reject, signal) {
+    signal.onabort = function (reason) {
+      promises.forEach(function (promise) {
+        if (promise instanceof AbortablePromise) {
+          promise.abort(reason).catch(reject);
+        }
+      });
+      reject(reason);
+    };
+
+    Promise.all(promises).then(resolve, reject);
+  });
+};
+
+AbortablePromise.race = function (promises) {
+  return new AbortablePromise(function (resolve, reject, signal) {
+    signal.onabort = function (reason) {
+      promises.forEach(function (promise) {
+        if (promise instanceof AbortablePromise) {
+          promise.abort(reason).catch(reject);
+        }
+      });
+      reject(reason);
+    };
+
+    Promise.race(promises).then(resolve, reject);
+  });
+};
 /**
  * Custom AbortController
  *
- * @return {Object}
+ * @return {Object} abortController
  */
+
 
 function getAbortController() {
   var abortSignal = {
@@ -332,4 +306,4 @@ function getAbortController() {
   return abortController;
 }
 
-module.exports = AbortablePromise;
+export default AbortablePromise;
