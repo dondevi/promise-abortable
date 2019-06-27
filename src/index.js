@@ -1,18 +1,5 @@
 /**
- * =============================================================================
  * Abortable Promise
- * =============================================================================
- * @class AbortablePromise
- * @requires Promise
- *
- * @usage
- *   const promise = new AbortablePromise((resolve, reject, signal) => {
- *     const xhr = ...;
- *     signal.onabort = reason => xhr.abort(reson);
- *   });
- *   ...
- *   promise.abort();
- * =============================================================================
  *
  * @author dondevi
  * @create 2019-05-27
@@ -61,49 +48,40 @@ export default class AbortablePromise extends Promise {
     }, this.abortController);
   }
 
-  static all (promises) {
-    const values = [];
-    const aborts = [];
-    let length = promises.length;
-    return new AbortablePromise((resolve, reject, signal) => {
-      signal.onabort = reason => {
-        aborts.forEach(abort => abort(reason).catch(reject));
-        reject(reason);
-      }
-      promises.forEach((promise, index) => {
-        if (promise instanceof AbortablePromise) {
-          aborts.push(promise.abort.bind(promise));
-        }
-        promise.then(value => {
-          values[index] = value;
-          0 === --length && resolve(values);
-        }, reject);
-      });
-    });
-  }
-
-  static race (promises) {
-    const aborts = [];
-    return new AbortablePromise((resolve, reject, signal) => {
-      signal.onabort = reason => {
-        aborts.forEach(abort => abort(reason).catch(reject));
-        reject(reason);
-      }
-      promises.forEach(promise => {
-        if (promise instanceof AbortablePromise) {
-          aborts.push(promise.abort.bind(promise));
-        }
-        promise.then(resolve, reject);
-      });
-    });
-  }
-
 };
+
+AbortablePromise.all = function (promises) {
+  return new AbortablePromise((resolve, reject, signal) => {
+    signal.onabort = reason => {
+      promises.forEach((promise) => {
+        if (promise instanceof AbortablePromise) {
+          promise.abort(reason).catch(reject);
+        }
+      });
+      reject(reason);
+    }
+    Promise.all(promises).then(resolve, reject);
+  });
+}
+
+AbortablePromise.race = function (promises) {
+  return new AbortablePromise((resolve, reject, signal) => {
+    signal.onabort = reason => {
+      promises.forEach((promise) => {
+        if (promise instanceof AbortablePromise) {
+          promise.abort(reason).catch(reject);
+        }
+      });
+      reject(reason);
+    }
+    Promise.race(promises).then(resolve, reject);
+  });
+}
 
 /**
  * Custom AbortController
  *
- * @return {Object}
+ * @return {Object} abortController
  */
 function getAbortController () {
   const abortSignal = {

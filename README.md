@@ -3,6 +3,7 @@
 Promise lib for abortable.
 
 
+
 ## Basic Usage
 
 ```javascript
@@ -137,16 +138,16 @@ const promise3 = AbortableDelay("resolve at 3s", 3000);
 const promise4 = AbortableDelay("resolve at 4s", 4000);
 
 promise1.then(value => {
-  console.log(value);  // output "resolve at 1s"
+  console.log("promise1:", value);  // output "promise1: resolve at 1s"
   return promise2;
 }).catch(reason => {
-  console.log(reason);  // output "abort at 1.5s"
+  console.log("promise2:", reason);  // output "promise2: abort at 1.5s"
   return promise3;
 }).then(value => {
-  console.log(value);  // output "resolve at 3s"
+  console.log("promise3:", value);  // output "promise3: resolve at 3s"
   return promise4;
 }).catch(reason => {
-  console.log(reason);  // output "abort at 3.5s"
+  console.log("promise4:", reason);  // output "promise4: abort at 3.5s"
 });
 
 setTimeout(() => {
@@ -165,12 +166,12 @@ setTimeout(() => {
 const promise = AbortableDelay("resolve", 1000);
 
 const promise1 = promise.catch(reason => {
-  console.log(reason);  // output "abort"
+  console.log("promise1:", reason);  // output "promise1: abort"
   return "catch abort 1";
 });
 
 const promise2 = promise.catch(reason => {
-  console.log(reason);  // output "abort"
+  console.log("promise2:", reason);  // output "promise2: abort"
   return "catch abort 2";
 });
 
@@ -188,25 +189,25 @@ const promise2 = AbortableDelay("resolve at 2s", 2000);
 const promiseAll = AbortablePromise.all([promise1, promise2]);
 
 promise1.then(value => {
-  console.log(value);  // ouput "resolve at 1s"
+  console.log("promise1:", value);  // ouput "promise1: resolve at 1s"
 }).catch(reason => {
-  console.log(reason);  // no execute
+  console.log("promise1:", reason);  // no execute
 });
 
 promise2.then(value => {
-  console.log(value);  // no execute
+  console.log("promise2:", value);  // no execute
 }).catch(reason => {
-  console.log(reason);  // output "abort all at 1.5"
+  console.log("promise2:", reason);  // output "promise2: abort at 1.5s"
 });
 
 promiseAll.then(value => {
-  console.log(value);  // no execute
+  console.log("promiseAll:", value);  // no execute
 }).catch(reason => {
-  console.log(reason);  // output "abort all at 1.5"
+  console.log("promiseAll:", reason);  // output "promiseAll: abort at 1.5s"
 });
 
 setTimeout(() => {
-  promiseAll.abort("abort all at 1.5");
+  promiseAll.abort("abort at 1.5s");
 }, 1500);
 ```
 
@@ -219,24 +220,24 @@ const promise2 = AbortableDelay("resolve at 2s", 2000);
 const promiseRace = AbortablePromise.race([promise1, promise2]);
 
 promise1.then(value => {
-  console.log(value);  // ouput "resolve at 1s"
+  console.log("promise1:", value);  // ouput "promise1: resolve at 1s"
 }).catch(reason => {
-  console.log(reason);  // no execute
+  console.log("promise1:", reason);  // no execute
 });
 
 promise2.then(value => {
-  console.log(value);  // no execute
+  console.log("promise2:", value);  // no execute
 }).catch(reason => {
-  console.log(reason);  // output "abort race at 1.5"
+  console.log("promise2:", reason);  // output "promise2: abort at 1.5s"
 });
 
 promiseRace.then(value => {
-  console.log(value);  // output "resolve at 1s"
+  console.log("promiseRace:", value);  // output "promiseRace: resolve at 1s"
 }).catch(reason => {
-  console.log(reason);  // no execute
+  console.log("promiseRace:", reason);  // no execute
 });
 
 setTimeout(() => {
-  promiseRace.abort("abort race at 1.5");
+  promiseRace.abort("abort at 1.5s");
 }, 1500);
 ```
