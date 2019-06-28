@@ -2,7 +2,7 @@
   "name": "promise-abortable",
   "version": "1.0.0",
   "description": "A Promise lib for abortable.",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "scripts": {
     "build": "rollup -c",
     "test": "mocha"
