@@ -241,13 +241,3 @@ setTimeout(() => {
   promiseRace.abort("abort at 1.5s");
 }, 1500);
 ```
-
-<script src="./dist/index.iife.js"></script>
-<script>
-  function AbortableDelay (value, delay = 0) {
-    return new AbortablePromise((resolve, reject, signal) => {
-      setTimeout(resolve, delay, value);
-      signal.onabort = reject;
-    });
-  }
-</script>
