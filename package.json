@@ -1,18 +1,31 @@
 {
   "name": "promise-abortable",
-  "version": "1.0.0",
+  "author": "dondevi",
+  "version": "1.0.1",
+  "license": "MIT",
   "description": "A Promise lib for abortable.",
+  "keywords": [
+    "promise",
+    "abort",
+    "cancel"
+  ],
+  "files": [
+    "src",
+    "dist"
+  ],
+  "homepage": "https://github.com/dondevi/promise-abortable",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dondevi/promise-abortable.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dondevi/promise-abortable/issues"
+  },
   "main": "src/index.js",
   "scripts": {
     "build": "rollup -c",
     "test": "mocha"
   },
-  "keywords": [
-    "promise",
-    "abort"
-  ],
-  "author": "dondevi",
-  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/polyfill": "^7.4.4",
