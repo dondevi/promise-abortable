@@ -189,7 +189,7 @@ const promise2 = AbortableDelay("resolve at 2s", 2000);
 const promiseAll = AbortablePromise.all([promise1, promise2]);
 
 promise1.then(value => {
-  console.log("promise1:", value);  // ouput "promise1: resolve at 1s"
+  console.log("promise1:", value);  // output "promise1: resolve at 1s"
 }).catch(reason => {
   console.log("promise1:", reason);  // no execute
 });
@@ -220,7 +220,7 @@ const promise2 = AbortableDelay("resolve at 2s", 2000);
 const promiseRace = AbortablePromise.race([promise1, promise2]);
 
 promise1.then(value => {
-  console.log("promise1:", value);  // ouput "promise1: resolve at 1s"
+  console.log("promise1:", value);  // output "promise1: resolve at 1s"
 }).catch(reason => {
   console.log("promise1:", reason);  // no execute
 });
@@ -241,3 +241,13 @@ setTimeout(() => {
   promiseRace.abort("abort at 1.5s");
 }, 1500);
 ```
+
+<script src="./dist/index.iife.js"></script>
+<script>
+  function AbortableDelay (value, delay = 0) {
+    return new AbortablePromise((resolve, reject, signal) => {
+      setTimeout(resolve, delay, value);
+      signal.onabort = reject;
+    });
+  }
+</script>
