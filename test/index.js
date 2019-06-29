@@ -6,7 +6,7 @@
  */
 
 const assert = require("assert");
-const AbortablePromise = require("../dist/index.cjs.js");
+const AbortablePromise = require("../src/index.js");
 
 
 describe("AbortablePromise", () => {

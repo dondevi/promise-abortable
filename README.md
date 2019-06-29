@@ -4,7 +4,22 @@ Promise lib for abortable.
 
 
 
-## Basic Usage
+## Install
+
+### NPM
+
+```bash
+$ npm install promise-abortable
+```
+
+### Browser (with polyfill)
+```html
+<script src="https://unpkg.com/promise-abortable/dist/index.min.js"></script>
+```
+
+
+
+## Usage
 
 ```javascript
 const promise = new AbortablePromise((resolve, reject, signal) => {
@@ -16,7 +31,7 @@ promise.abort(reason);  // execute signal.onabort(reason)
 
 
 
-## Basic Examples
+## Examples
 
 ### Abort Promise
 
@@ -98,7 +113,7 @@ promise.abort("abort fetch");
 
 
 
-## More Examples
+## More
 
 ```javascript
 /**
@@ -113,19 +128,6 @@ function AbortableDelay (value, delay = 0) {
     signal.onabort = reject;
   });
 }
-```
-
-
-### Duplicate abort
-
-```javascript
-const promise = AbortableDelay("resolve", 1000);
-
-promise.catch(reason => {
-  console.log(reason);  // output "abort 1"
-});
-
-promise.abort("abort 1").abort("abort 2");
 ```
 
 

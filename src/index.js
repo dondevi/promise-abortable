@@ -4,7 +4,7 @@
  * @author dondevi
  * @create 2019-05-27
  */
-export default class AbortablePromise extends Promise {
+class AbortablePromise extends Promise {
 
   constructor (executor, abortController) {
     super((resolve, reject) => {
@@ -101,3 +101,4 @@ function getAbortController () {
   return abortController;
 }
 
+module.exports = AbortablePromise;

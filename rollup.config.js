@@ -5,31 +5,42 @@
  * @create 2019-06-23
  */
 
+import resolve from "rollup-plugin-node-resolve";
+import commonjs from "rollup-plugin-commonjs";
 import babel from "rollup-plugin-babel";
-// import eslint from "rollup-plugin-eslint";
+import { uglify } from "rollup-plugin-uglify";
 
-const formats = ["amd", "cjs", "es", "iife", "umd"];
+// "amd", "cjs", "system", "esm", "iife", "umd"
 
-const config = formats.map(format => {
-  return {
-    input: "src/index.js",
-    output: {
-      name: "AbortablePromise",
-      file: `dist/index.${format}.js`,
-      format
-    },
-    plugins: [
-      babel({
-        exclude: ["node_modules/**"]
-      }),
-      // eslint({
-      //   throwOnError: true,
-      //   throwOnWarning: true,
-      //   include: ['src/**'],
-      //   exclude: ['node_modules/**']
-      // })
-    ]
-  }
-});
+const config = [{
+  input: "src/index.js",
+  output: {
+    name: "AbortablePromise",
+    file: `dist/index.js`,
+    format: "iife"
+  },
+  plugins: [
+    resolve(),
+    commonjs(),
+    babel({
+      exclude: ["node_modules/**"]
+    })
+  ]
+}, {
+  input: "src/index.js",
+  output: {
+    name: "AbortablePromise",
+    file: `dist/index.min.js`,
+    format: "iife"
+  },
+  plugins: [
+    resolve(),
+    commonjs(),
+    babel({
+      exclude: ["node_modules/**"]
+    }),
+    uglify()
+  ]
+}];
 
 export default config;
