@@ -4,6 +4,7 @@
  * @author dondevi
  * @create 2019-05-27
  */
+
 class AbortablePromise extends Promise {
 
   constructor (executor, abortController) {
