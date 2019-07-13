@@ -6,8 +6,18 @@
   "description": "A Promise lib for abortable.",
   "keywords": [
     "promise",
+    "abortable",
+    "cancellable",
     "abort",
-    "cancel"
+    "aborting",
+    "aborted",
+    "cancel",
+    "canceling",
+    "canceled",
+    "signal",
+    "onabort",
+    "abortSignal",
+    "abortController"
   ],
   "files": [
     "src",

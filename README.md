@@ -30,7 +30,7 @@ Any browser that supports <a href="http://caniuse.com/#feat=promises" target="_b
 --- | --- | --- | --- | --- |
 33 ✔ | 29 ✔ | 8 ✔ | 20 ✔ | 12 ✔ |
 
-<small>If run in others, use <a herf="https://babeljs.io/" target="\_blank">Babel</a>, or include script `polyfill.min.js` below.</small>
+<small>If run in others, use <a herf="https://babeljs.io/" target="_blank">Babel</a>, or include script `polyfill.min.js` below.</small>
 
 
 
@@ -53,7 +53,7 @@ The IIFE build is also available on unpkg:
 ## Usage
 
 ```javascript
-// 1. Ininstantiation
+// 1. Instantiate
 const promise = new AbortablePromise((resolve, reject, signal) => {
   // 2. Set abort handler
   signal.onabort = reason => {

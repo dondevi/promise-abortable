@@ -21,11 +21,13 @@ AbortablePromise.prototype.constructor = AbortablePromise;
 AbortablePromise.prototype.then = function (onFulfilled, onRejected) {
   var that = this;
   return new AbortablePromise(function (resolve, reject, signal) {
-    const onSettled = function (status, value, callback) {
+    var onSettled = function (status, value, callback) {
       if ("function" === typeof callback) {
         value = callback(value);
         if (value instanceof AbortablePromise) {
-          Object.assign(signal, value.abortController.signal);
+          var superSignal = value.abortController.signal;
+          signal.aborted = superSignal.aborted;
+          signal.onabort = superSignal.onabort;
         }
         return resolve(value);
       }
@@ -99,17 +101,17 @@ AbortablePromise.race = function (promises) {
  * @return {Object} abortController
  */
 function getAbortController () {
-  const abortSignal = {
+  var abortSignal = {
     aborted: false,
     onabort: null
   };
-  const abort = function (reason) {
+  var abort = function (reason) {
     if (abortSignal.aborted) { return; }
-    const { onabort } = abortSignal;
+    var { onabort } = abortSignal;
     "function" === typeof onabort && onabort(reason);
     abortSignal.aborted = true;
   };
-  const abortController = {
+  var abortController = {
     signal: abortSignal,
     abort: abort
   };
