@@ -5,13 +5,12 @@
  * @create 2019-05-27
  */
 
-class AbortablePromise extends Promise {
+import getAbortController from "./controller.js";
 
-  constructor (executor, abortController) {
+export default class AbortablePromise extends Promise {
+
+  constructor (executor, abortController = getAbortController()) {
     super((resolve, reject) => {
-      if (!abortController) {
-        abortController = getAbortController();
-      }
       executor(resolve, reject, abortController.signal);
     });
     this.abortController = abortController;
@@ -42,64 +41,40 @@ class AbortablePromise extends Promise {
 
   abort (reason) {
     return new AbortablePromise((resolve, reject) => {
-      setTimeout(() => {
+      Promise.resolve().then(() => {
         this.abortController.abort(reason);
         this.then(resolve, reject);
       });
     }, this.abortController);
   }
 
+  static all (promises) {
+    return new AbortablePromise((resolve, reject, signal) => {
+      setPromisesAbort(promises, signal);
+      Promise.all(promises).then(resolve, reject);
+    });
+  }
+
+  static race (promises) {
+    return new AbortablePromise((resolve, reject, signal) => {
+      setPromisesAbort(promises, signal);
+      Promise.race(promises).then(resolve, reject);
+    });
+  }
+
 };
 
-AbortablePromise.all = function (promises) {
-  return new AbortablePromise((resolve, reject, signal) => {
-    signal.onabort = reason => {
-      promises.forEach((promise) => {
-        if (promise instanceof AbortablePromise) {
-          promise.abort(reason).catch(reject);
-        }
-      });
-      reject(reason);
-    }
-    Promise.all(promises).then(resolve, reject);
-  });
-}
-
-AbortablePromise.race = function (promises) {
-  return new AbortablePromise((resolve, reject, signal) => {
-    signal.onabort = reason => {
-      promises.forEach((promise) => {
-        if (promise instanceof AbortablePromise) {
-          promise.abort(reason).catch(reject);
-        }
-      });
-      reject(reason);
-    }
-    Promise.race(promises).then(resolve, reject);
-  });
-}
-
 /**
- * Custom AbortController
- *
- * @return {Object} abortController
+ * Set promises abort
+ * @param {Array} promises - list of promise
+ * @param {Object} signal - abort signal
  */
-function getAbortController () {
-  const abortSignal = {
-    aborted: false,
-    onabort: null
-  };
-  const abort = reason => {
-    if (abortSignal.aborted) { return; }
-    const { onabort } = abortSignal;
-    "function" === typeof onabort && onabort(reason);
-    abortSignal.aborted = true;
-  };
-  const abortController = {
-    signal: abortSignal,
-    abort: abort
-  };
-  return abortController;
+function setPromisesAbort (promises, signal) {
+  signal.onabort = reason => {
+    promises.forEach((promise) => {
+      if (promise instanceof AbortablePromise) {
+        promise.abort(reason).catch(error => error);
+      }
+    });
+  }
 }
-
-module.exports = AbortablePromise;

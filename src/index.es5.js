@@ -1,11 +1,13 @@
 /**
- * Abortable Promise
+ * Abortable Promise (for es5 compile)
  *
  * @author dondevi
  * @create 2019-07-12
  */
 
-function AbortablePromise (executor, abortController) {
+import getAbortController from "./controller.js";
+
+export default function AbortablePromise (executor, abortController) {
   this.promise = new Promise(function (resolve, reject) {
     if (!abortController) {
       abortController = getAbortController();
@@ -48,7 +50,7 @@ AbortablePromise.prototype.catch = function (onRejected) {
 AbortablePromise.prototype.abort = function (reason) {
   var that = this;
   return new AbortablePromise(function (resolve, reject) {
-    setTimeout(function () {
+    Promise.resolve().then(function () {
       that.abortController.abort(reason);
       that.then(resolve, reject);
     });
@@ -69,53 +71,29 @@ AbortablePromise.reject = function (value) {
 
 AbortablePromise.all = function (promises) {
   return new AbortablePromise(function (resolve, reject, signal) {
-    signal.onabort = function (reason) {
-      promises.forEach(function (promise) {
-        if (promise instanceof AbortablePromise) {
-          promise.abort(reason).catch(reject);
-        }
-      });
-      reject(reason);
-    }
+    setPromisesAbort(promises, signal);
     Promise.all(promises).then(resolve, reject);
   });
 }
 
 AbortablePromise.race = function (promises) {
   return new AbortablePromise(function (resolve, reject, signal) {
-    signal.onabort = function (reason) {
-      promises.forEach(function (promise) {
-        if (promise instanceof AbortablePromise) {
-          promise.abort(reason).catch(reject);
-        }
-      });
-      reject(reason);
-    }
+    setPromisesAbort(promises, signal);
     Promise.race(promises).then(resolve, reject);
   });
 }
 
 /**
- * Custom AbortController
- *
- * @return {Object} abortController
+ * Set promises abort
+ * @param {Array} promises - list of promise
+ * @param {Object} signal - abort signal
  */
-function getAbortController () {
-  var abortSignal = {
-    aborted: false,
-    onabort: null
-  };
-  var abort = function (reason) {
-    if (abortSignal.aborted) { return; }
-    var { onabort } = abortSignal;
-    "function" === typeof onabort && onabort(reason);
-    abortSignal.aborted = true;
-  };
-  var abortController = {
-    signal: abortSignal,
-    abort: abort
-  };
-  return abortController;
+function setPromisesAbort (promises, signal) {
+  signal.onabort = function (reason) {
+    promises.forEach(function (promise) {
+      if (promise instanceof AbortablePromise) {
+        promise.abort(reason).catch(error => error);
+      }
+    });
+  }
 }
-
-module.exports = AbortablePromise;

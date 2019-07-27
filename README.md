@@ -9,15 +9,19 @@
 [![NPM count](https://img.shields.io/npm/dt/promise-abortable.svg?style=flat-square)](https://www.npmjs.com/package/promise-abortable)
 [![License](https://img.shields.io/npm/l/promise-abortable.svg?style=flat-square)](https://www.npmjs.com/package/promise-abortable)
 
-Promise lib for aborting in chain.
+
+
+## Concept
+
+**abort != reject**, reject in abort maually rather than automatically.
 
 
 
 ## Features
 
-- Abort promise
+- Abort in promise
 - Abort in promise chain
-- Abort nesting promise
+- Abort for nesting promise
 - Return promise after abort
 
 
@@ -30,7 +34,7 @@ Any browser that supports <a href="http://caniuse.com/#feat=promises" target="_b
 --- | --- | --- | --- | --- |
 33 ✔ | 29 ✔ | 8 ✔ | 20 ✔ | 12 ✔ |
 
-<small>If run in others, use <a herf="https://babeljs.io/" target="_blank">Babel</a>, or include script `polyfill.min.js` below.</small>
+<small>Use <a herf="https://babeljs.io/" target="_blank">Babel</a> for other browsers, or include script `polyfill.min.js` below.</small>
 
 
 
@@ -43,9 +47,9 @@ $ npm install promise-abortable
 The IIFE build is also available on unpkg:
 
 ```html
-<script src="https://unpkg.com/promise-abortable/dist/es5.min.js"></script> <!-- 1KB, recommend -->
-<script src="https://unpkg.com/promise-abortable/dist/es6.min.js"></script> <!-- 1KB -->
-<script src="https://unpkg.com/promise-abortable/dist/polyfill.min.js"></script> <!-- 19KB -->
+<script src="https://unpkg.com/promise-abortable/dist/iife.es5.js"></script> <!-- 1KB, recommend -->
+<script src="https://unpkg.com/promise-abortable/dist/iife.es6.js"></script> <!-- 1KB -->
+<script src="https://unpkg.com/promise-abortable/dist/iife.es3.js"></script> <!-- 16KB -->
 ```
 
 
@@ -57,7 +61,7 @@ The IIFE build is also available on unpkg:
 const promise = new AbortablePromise((resolve, reject, signal) => {
   // 2. Set abort handler
   signal.onabort = reason => {
-    // 4. `reason` is from `promise.abort(reason)`
+    // 4. Abort won't reject, but you can reject manually
   };
 });
 // 3. Invoke `signal.onabort(reason)`
@@ -69,15 +73,19 @@ promise.abort(reason);
 ## Pseudo code
 > See full examples <a href="./examples.md" target="\_blank">here</a>.
 
-### Promise abort
+### Abort in promise
 
 ```javascript
 const promise = new AbortablePromise(...);
+// or: const promise = AbortablePromise.resolve(...);
+// or: const promise = AbortablePromise.reject(...);
+// or: const promise = AbortablePromise.all([...]);
+// or: const promise = AbortablePromise.race([...]);
 promise.abort();
 ```
 
 
-### Clain abort
+### Abort in promise chain
 
 ```javascript
 const promise = new AbortablePromise(...).then(...).catch(...);
@@ -85,16 +93,13 @@ promise.abort();
 ```
 
 
-### Nesting abort
+### Abort for nesting promise
 
 ```javascript
-const promise = new AbortablePromise(...).catch(value => {
+const promise = AbortablePromise.resolve(...).then(value => {
   return new AbortablePromise(...);
 });
-// promise1 pending
-promise.abort();  // abort promise1 and run catch
-// promise2 pending
-promise.abort();  // abort promise2
+promise.abort();
 ```
 
 
@@ -103,20 +108,4 @@ promise.abort();  // abort promise2
 ```javascript
 const promise = new AbortablePromise(...);
 promise.abort().then(...).catch(...);
-```
-
-
-### Promise.all abort
-
-```javascript
-const promise = AbortablePromise.all([...]);
-promise.abort();
-```
-
-
-### Promise.race abort
-
-```javascript
-const promise = AbortablePromise.race([...]);
-promise.abort();
 ```

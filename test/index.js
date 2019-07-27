@@ -6,12 +6,12 @@
  */
 
 const assert = require("assert");
-const AbortablePromise = require("../src/index.js");
+const AbortablePromise = require("../dist/cjs.js");
 
 
 describe("AbortablePromise", () => {
 
-  it("should instanceof Promise, should abortable", () => {
+  it("should be instance of Promise, should have abort function", () => {
     const promise = new AbortablePromise(resolve => {});
     const promise_then = promise.then(vaule => {});
     const promise_catch = promise.catch(reson => {});
@@ -55,7 +55,7 @@ describe("AbortablePromise", () => {
       }).then(done).abort();
     });
 
-    it("should execute event if resolved", done => {
+    it("should execute 'signal.onabort()' even if had resolved", done => {
       new AbortablePromise((resolve, reject, signal) => {
         signal.onabort = reason => {
           assert.equal(reason, "abort");
@@ -64,7 +64,7 @@ describe("AbortablePromise", () => {
       }).then(done).abort("abort");
     });
 
-    it("should execute event if rejected", done => {
+    it("should execute 'signal.onabort()' even if had rejected", done => {
       new AbortablePromise((resolve, reject, signal) => {
         signal.onabort = reason => {
           assert.equal(reason, "abort");
@@ -73,7 +73,7 @@ describe("AbortablePromise", () => {
       }).catch(done).abort("abort");
     });
 
-    it("should keep chain after abort", done => {
+    it("should return promise after abort (keepping chain)", done => {
       new AbortablePromise((resolve, reject, signal) => {
         signal.onabort = reject;
       }).catch(reason => reason).abort("abort").then(value => {
@@ -82,7 +82,7 @@ describe("AbortablePromise", () => {
       });
     });
 
-    it("should not execute if aborted", done => {
+    it("should not execute if had aborted", done => {
       new AbortablePromise((resolve, reject, signal) => {
         signal.onabort = reason => {
           assert.equal(reason, 1);
@@ -99,11 +99,11 @@ describe("AbortablePromise", () => {
       }).catch(done).abort();
     });
 
-    it("should execute nesting abort event if aborted", done => {
-      const promise1 = AbortableDelay("resolve at 10ms", 10);
-      const promise2 = AbortableDelay("resolve at 20ms", 20);
-      const promise3 = AbortableDelay("resolve at 30ms", 30);
-      const promise4 = AbortableDelay("resolve at 40ms", 40);
+    it("should execute nesting abort even if aborted", done => {
+      const promise1 = new AbortableDelay("resolve at 10ms", 10);
+      const promise2 = new AbortableDelay("resolve at 20ms", 20);
+      const promise3 = new AbortableDelay("resolve at 30ms", 30);
+      const promise4 = new AbortableDelay("resolve at 40ms", 40);
       promise1.then(value => {
         assert.equal(value, "resolve at 10ms");
         return promise2;
@@ -129,9 +129,9 @@ describe("AbortablePromise", () => {
   });
 
   describe("#all()", () => {
-    it("should abort all that not resolved", done => {
-      const promise1 = AbortableDelay("resolve at 10ms", 10);
-      const promise2 = AbortableDelay("resolve at 20ms", 20);
+    it("should abort all that not aborted", done => {
+      const promise1 = new AbortableDelay("resolve at 10ms", 10);
+      const promise2 = new AbortableDelay("resolve at 20ms", 20);
       const promiseAll = AbortablePromise.all([promise1, promise2]);
       promise1.then(value => {
         assert.equal(value, "resolve at 10ms");
@@ -150,9 +150,9 @@ describe("AbortablePromise", () => {
   });
 
   describe("#race()", () => {
-    it("should abort all that not resolved", done => {
-      const promise1 = AbortableDelay("resolve at 10ms", 10);
-      const promise2 = AbortableDelay("resolve at 20ms", 20);
+    it("should abort all that not aborted", done => {
+      const promise1 = new AbortableDelay("resolve at 10ms", 10);
+      const promise2 = new AbortableDelay("resolve at 20ms", 20);
       const promiseRace = AbortablePromise.race([promise1, promise2]);
       promise1.then(value => {
         assert.equal(value, "resolve at 10ms");

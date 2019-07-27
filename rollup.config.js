@@ -14,10 +14,30 @@ import uglifyEs from "rollup-plugin-uglify-es";
 // "amd", "cjs", "system", "esm", "iife", "umd"
 
 const config = [{
+  input: "src/index.js",
+  output: {
+    name: "AbortablePromise",
+    file: `dist/cjs.js`,
+    format: "cjs"
+  },
+  plugins: [
+    uglifyEs()
+  ]
+}, {
+  input: "src/index.js",
+  output: {
+    name: "AbortablePromise",
+    file: `dist/iife.es6.js`,
+    format: "iife"
+  },
+  plugins: [
+    uglifyEs()
+  ]
+}, {
   input: "src/index.es5.js",
   output: {
     name: "AbortablePromise",
-    file: `dist/es5.min.js`,
+    file: `dist/iife.es5.js`,
     format: "iife"
   },
   plugins: [
@@ -30,10 +50,10 @@ const config = [{
     uglify()
   ]
 }, {
-  input: "src/index.js",
+  input: "src/index.es5.js",
   output: {
     name: "AbortablePromise",
-    file: `dist/polyfill.min.js`,
+    file: `dist/iife.es3.js`,
     format: "iife"
   },
   plugins: [
@@ -43,22 +63,6 @@ const config = [{
       exclude: ["node_modules/**"]
     }),
     uglify()
-  ]
-}, {
-  input: "src/index.js",
-  output: {
-    name: "AbortablePromise",
-    file: `dist/es6.min.js`,
-    format: "iife"
-  },
-  plugins: [
-    resolve(),
-    commonjs(),
-    babel({
-      babelrc: false,
-      presets: [["@babel/env", { "targets": { "chrome": "75" } }]]
-    }),
-    uglifyEs()
   ]
 }];
 
