@@ -34,7 +34,7 @@ Any browser that supports <a href="http://caniuse.com/#feat=promises" target="_b
 --- | --- | --- | --- | --- |
 33 ✔ | 29 ✔ | 8 ✔ | 20 ✔ | 12 ✔ |
 
-<small>Use <a herf="https://babeljs.io/" target="_blank">Babel</a> for other browsers, or include script `polyfill.min.js` below.</small>
+<small>Use <a herf="https://babeljs.io/" target="_blank">Babel</a> for lower versions, or include script `iife.es3.js` below.</small>
 
 
 
