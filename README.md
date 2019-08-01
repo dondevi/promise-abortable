@@ -1,9 +1,9 @@
 # promise-abortable
 
 [![NPM version](https://img.shields.io/npm/v/promise-abortable.svg?style=flat-square)](https://npmjs.org/package/promise-abortable)
-[![node version](https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square)](http://nodejs.org/download/)
+[![node version](https://img.shields.io/badge/node.js-%3E=_0.12-green.svg?style=flat-square)](http://nodejs.org/download/)
 <!-- [![build status](https://img.shields.io/travis/avwo/promise-abortable.svg?style=flat-square)](https://travis-ci.org/avwo/promise-abortable) -->
-<!-- [![Test coverage](https://codecov.io/gh/avwo/promise-abortable/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/avwo/promise-abortable) -->
+[![Test coverage](https://codecov.io/gh/avwo/promise-abortable/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/avwo/promise-abortable)
 <!-- [![Install size](https://packagephobia.now.sh/badge?p=promise-abortable)](https://packagephobia.now.sh/result?p=promise-abortable) -->
 [![NPM download](https://img.shields.io/npm/dm/promise-abortable.svg?style=flat-square)](https://npmjs.org/package/promise-abortable)
 [![NPM count](https://img.shields.io/npm/dt/promise-abortable.svg?style=flat-square)](https://www.npmjs.com/package/promise-abortable)
@@ -23,6 +23,13 @@
 - Abort in promise chain
 - Abort for nesting promise
 - Return promise after abort
+
+
+
+## Use Cases
+- Cancel request when component hide, unmount or destory
+- Cancel long-running async operation
+- Return promise with abort for common request function
 
 
 
@@ -103,9 +110,20 @@ promise.abort();
 ```
 
 
-### Promise after abort
+### Return promise after abort
 
 ```javascript
 const promise = new AbortablePromise(...);
 promise.abort().then(...).catch(...);
+```
+
+
+### Abort in async/await
+
+```javascript
+const promise = new AbortablePromise(...);
+(async () => {
+  try { await promise; } catch (error) {...}
+})();
+promise.abort();
 ```

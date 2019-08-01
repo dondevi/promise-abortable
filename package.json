@@ -1,7 +1,7 @@
 {
   "name": "promise-abortable",
   "author": "dondevi",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "MIT",
   "description": "A Promise lib for aborting in chain.",
   "keywords": [
@@ -14,6 +14,8 @@
     "cancel",
     "canceling",
     "canceled",
+    "async",
+    "await",
     "signal",
     "onabort",
     "abortSignal",
