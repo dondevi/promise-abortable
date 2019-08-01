@@ -4,8 +4,9 @@ node_js:
   - 8
   - 6
 install:
-  - npm install -g codecov
+  - npm install -g mocha
   - npm install -g istanbul
+  - npm install -g codecov
 script:
   - istanbul cover _mocha
   - codecov
