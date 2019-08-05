@@ -41,11 +41,10 @@
     "test": "mocha",
     "cover": "istanbul cover _mocha"
   },
-  "dependencies": {
-    "@babel/polyfill": "^7.4.4"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.4.5",
+    "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "eslint": "^6.0.0",
     "rollup-plugin-babel": "^4.3.3",
