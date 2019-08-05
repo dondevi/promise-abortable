@@ -4,10 +4,10 @@ node_js:
   - 8
   - 6
 install:
+  - npm install -g rollup
   - npm install -g mocha
   - npm install -g istanbul
   - npm install -g codecov
-  - npm install
 script:
   - npm run build
   - npm run cover
