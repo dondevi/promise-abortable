@@ -4,7 +4,7 @@
 [![node version](https://img.shields.io/badge/node.js-%3E=_0.12-green.svg?style=flat-square)](http://nodejs.org/download/)
 [![build status](https://img.shields.io/travis/dondevi/promise-abortable.svg?style=flat-square)](https://travis-ci.org/dondevi/promise-abortable)
 [![Test coverage](https://codecov.io/gh/dondevi/promise-abortable/branch/master/graph/badge.svg?style=flat-square)](https://codecov.io/gh/dondevi/promise-abortable)
-<!-- [![Install size](https://packagephobia.now.sh/badge?p=promise-abortable)](https://packagephobia.now.sh/result?p=promise-abortable) -->
+[![Install size](https://packagephobia.now.sh/badge?p=promise-abortable)](https://packagephobia.now.sh/result?p=promise-abortable)
 [![NPM download](https://img.shields.io/npm/dm/promise-abortable.svg?style=flat-square)](https://npmjs.org/package/promise-abortable)
 [![NPM count](https://img.shields.io/npm/dt/promise-abortable.svg?style=flat-square)](https://www.npmjs.com/package/promise-abortable)
 [![License](https://img.shields.io/npm/l/promise-abortable.svg?style=flat-square)](https://www.npmjs.com/package/promise-abortable)
