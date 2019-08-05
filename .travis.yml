@@ -8,5 +8,6 @@ install:
   - npm install -g istanbul
   - npm install -g codecov
 script:
-  - istanbul cover _mocha
+  - npm run build
+  - npm run cover
   - codecov

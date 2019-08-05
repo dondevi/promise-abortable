@@ -1,9 +1,9 @@
 {
   "name": "promise-abortable",
   "author": "dondevi",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "license": "MIT",
-  "description": "A Promise lib for aborting in chain.",
+  "description": "A little lib for aborting in Promise chain.",
   "keywords": [
     "promise",
     "abortable",
@@ -38,7 +38,8 @@
   "browser": "dist/iife.es5.js",
   "scripts": {
     "build": "rollup -c",
-    "test": "mocha"
+    "test": "mocha",
+    "cover": "istanbul cover _mocha"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4"

@@ -13,7 +13,7 @@
 
 ## Concept
 
-**abort != reject**, reject in abort maually rather than automatically.
+**abort != reject**
 
 
 
@@ -41,14 +41,19 @@ Any browser that supports <a href="http://caniuse.com/#feat=promises" target="_b
 --- | --- | --- | --- | --- |
 33 ✔ | 29 ✔ | 8 ✔ | 20 ✔ | 12 ✔ |
 
-<small>Use <a herf="https://babeljs.io/" target="_blank">Babel</a> for lower versions, or include script `iife.es3.js` below.</small>
-
+- <small>Use <a herf="https://babeljs.io/" target="_blank">Babel</a> for lower versions</small>
+- <small>Or include script `iife.es3.js` below</small>
+- <small>But I think <a href="http://bluebirdjs.com/docs/api/cancellation.html" target="_blank">bluebird 3</a> is a better choice</small>
 
 
 ## Install
 
 ```bash
 $ npm install promise-abortable
+```
+
+```javascript
+import AbortablePromise from "promise-abortable";
 ```
 
 The IIFE build is also available on unpkg:

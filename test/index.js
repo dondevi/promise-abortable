@@ -11,29 +11,33 @@ const AbortablePromise = require("../dist/cjs.js");
 
 describe("AbortablePromise", () => {
 
-  it("should be instance of Promise, should have abort function", () => {
-    const promise = new AbortablePromise(resolve => {});
-    const promise_then = promise.then(vaule => {});
-    const promise_catch = promise.catch(reson => {});
-    const promise_abort = promise.abort();
-    const promise_resolve = AbortablePromise.resolve();
-    const promise_reject = AbortablePromise.reject();
-    const promise_all = AbortablePromise.all([]);
-    const promise_race = AbortablePromise.race([]);
-    assertAbortable(promise);
-    assertAbortable(promise_then);
-    assertAbortable(promise_catch);
-    assertAbortable(promise_abort);
-    assertAbortable(promise_resolve);
-    assertAbortable(promise_reject);
-    promise_reject.catch(reason => reason);
+  describe("new", () => {
+
+    it("should instance of Promise, should have 'abort()'", () => {
+      const promise = new AbortablePromise(resolve => {});
+      const promise_then = promise.then(vaule => {});
+      const promise_catch = promise.catch(reson => {});
+      const promise_abort = promise.abort();
+      const promise_resolve = AbortablePromise.resolve();
+      const promise_reject = AbortablePromise.reject();
+      const promise_all = AbortablePromise.all([]);
+      const promise_race = AbortablePromise.race([]);
+      assertAbortable(promise);
+      assertAbortable(promise_then);
+      assertAbortable(promise_catch);
+      assertAbortable(promise_abort);
+      assertAbortable(promise_resolve);
+      assertAbortable(promise_reject);
+      promise_reject.catch(reason => reason);
+    });
+
   });
 
   describe("#abort()", () => {
 
     it("should do nothing without setting signal", done => {
       new AbortablePromise((resolve) => {
-        setTimeout(resolve, 30);
+        setTimeout(resolve, 10);
       }).then(done).abort();
     });
 
@@ -41,6 +45,26 @@ describe("AbortablePromise", () => {
       new AbortablePromise((resolve, reject, signal) => {
         signal.onabort = done;
       }).abort();
+    });
+
+    it("should execute 'signal.onabort()' even if resolved", done => {
+      new AbortablePromise((resolve, reject, signal) => {
+        signal.onabort = reason => {
+          assert.equal(reason, "abort");
+          done();
+        };
+        resolve();
+      }).abort("abort");
+    });
+
+    it("should execute 'signal.onabort()' even if rejected", done => {
+      new AbortablePromise((resolve, reject, signal) => {
+        signal.onabort = reason => {
+          assert.equal(reason, "abort");
+          done();
+        };
+        reject();
+      }).catch(error => error).abort("abort");
     });
 
     it("should reject if 'reject()' set to signal", done => {
@@ -55,25 +79,7 @@ describe("AbortablePromise", () => {
       }).then(done).abort();
     });
 
-    it("should execute 'signal.onabort()' even if had resolved", done => {
-      new AbortablePromise((resolve, reject, signal) => {
-        signal.onabort = reason => {
-          assert.equal(reason, "abort");
-        };
-        resolve();
-      }).then(done).abort("abort");
-    });
-
-    it("should execute 'signal.onabort()' even if had rejected", done => {
-      new AbortablePromise((resolve, reject, signal) => {
-        signal.onabort = reason => {
-          assert.equal(reason, "abort");
-        };
-        reject();
-      }).catch(done).abort("abort");
-    });
-
-    it("should return promise after abort (keepping chain)", done => {
+    it("should ignore 'abort()' in promise chain", done => {
       new AbortablePromise((resolve, reject, signal) => {
         signal.onabort = reject;
       }).catch(reason => reason).abort("abort").then(value => {
@@ -82,7 +88,7 @@ describe("AbortablePromise", () => {
       });
     });
 
-    it("should not execute if had aborted", done => {
+    it("should not execute if aborted", done => {
       new AbortablePromise((resolve, reject, signal) => {
         signal.onabort = reason => {
           assert.equal(reason, 1);
