@@ -4,8 +4,8 @@
  * @return {Object} abortController
  */
 export default function getAbortController () {
-  const abortSignal = getAbortSignal();
-  const abort = reason => {
+  var abortSignal = getAbortSignal();
+  var abort = function (reason) {
     if (abortSignal.aborted) { return; }
     abortSignal.aborted = true;
     abortSignal.dispatchEvent(reason);  // Different from AbortSignal
@@ -22,11 +22,11 @@ export default function getAbortController () {
  * @return {Object} abortSignal
  */
 function getAbortSignal () {
-  const abortSignal = {
+  var abortSignal = {
     aborted: false,
     onabort: null
   };
-  abortSignal.dispatchEvent = event => {
+  abortSignal.dispatchEvent = function (event) {
     if ("function" === typeof abortSignal.onabort) {
       abortSignal.onabort(event);
     }

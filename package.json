@@ -1,7 +1,7 @@
 {
   "name": "promise-abortable",
   "author": "dondevi",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "license": "MIT",
   "description": "A little lib for aborting in Promise chain.",
   "keywords": [
@@ -34,8 +34,8 @@
     "url": "https://github.com/dondevi/promise-abortable/issues"
   },
   "main": "src/index.js",
-  "module": "dist/cjs.js",
-  "browser": "dist/iife.es5.js",
+  "module": "dist/cjs.es6.js",
+  "browser": "dist/cjs.es5.js",
   "scripts": {
     "build": "rollup -c",
     "test": "mocha",

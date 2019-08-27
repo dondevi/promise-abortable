@@ -92,7 +92,7 @@ function setPromisesAbort (promises, signal) {
   signal.onabort = function (reason) {
     promises.forEach(function (promise) {
       if (promise instanceof AbortablePromise) {
-        promise.abort(reason).catch(error => error);
+        promise.abort(reason).catch(function () {});
       }
     });
   }

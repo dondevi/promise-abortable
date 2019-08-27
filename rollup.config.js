@@ -17,7 +17,17 @@ const config = [{
   input: "src/index.js",
   output: {
     name: "AbortablePromise",
-    file: `dist/cjs.js`,
+    file: `dist/cjs.es6.js`,
+    format: "cjs"
+  },
+  plugins: [
+    uglifyEs()
+  ]
+}, {
+  input: "src/index.es5.js",
+  output: {
+    name: "AbortablePromise",
+    file: `dist/cjs.es5.js`,
     format: "cjs"
   },
   plugins: [
