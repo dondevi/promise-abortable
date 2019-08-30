@@ -54,6 +54,12 @@ $ npm install promise-abortable
 
 ```javascript
 import AbortablePromise from "promise-abortable";
+
+// For Node 6+
+const AbortablePromise = require("promise-abortable");
+
+// For Node 4-
+var AbortablePromise = require("promise-abortable/dist/cjs.es5.js");
 ```
 
 The IIFE build is also available on unpkg:
