@@ -24,6 +24,16 @@ const config = [{
     uglifyEs()
   ]
 }, {
+  input: "src/index.js",
+  output: {
+    name: "AbortablePromise",
+    file: `dist/esm.es6.js`,
+    format: "esm"
+  },
+  plugins: [
+    uglifyEs()
+  ]
+}, {
   input: "src/index.es5.js",
   output: {
     name: "AbortablePromise",

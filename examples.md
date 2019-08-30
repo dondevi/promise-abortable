@@ -96,13 +96,31 @@ function AbortableDelay (value, delay = 0) {
 ```
 
 
+### Abort in async/await
+
+```javascript
+const promise = new AbortableDelay("resolve at 1s", 1000);
+(async () => {
+  try {
+    console.log("resolve", await promise);
+  } catch (error) {
+    if (promise.abortController.signal.aborted) {
+      return console.log(error);  // output "abort"
+    }
+    throw error;
+  }
+})();
+promise.abort("abort");
+```
+
+
 ### Nesting abort
 
 ```javascript
-const promise1 = AbortableDelay("resolve at 1s", 1000);
-const promise2 = AbortableDelay("resolve at 2s", 2000);
-const promise3 = AbortableDelay("resolve at 3s", 3000);
-const promise4 = AbortableDelay("resolve at 4s", 4000);
+const promise1 = new AbortableDelay("resolve at 1s", 1000);
+const promise2 = new AbortableDelay("resolve at 2s", 2000);
+const promise3 = new AbortableDelay("resolve at 3s", 3000);
+const promise4 = new AbortableDelay("resolve at 4s", 4000);
 
 promise1.then(value => {
   console.log("promise1:", value);  // output "promise1: resolve at 1s"
@@ -130,7 +148,7 @@ setTimeout(() => {
 ### Promise after abort
 
 ```javascript
-const promise = AbortableDelay("resolve", 1000);
+const promise = new AbortableDelay("resolve", 1000);
 
 const promise1 = promise.catch(reason => {
   console.log("promise1:", reason);  // output "promise1: abort"
@@ -151,8 +169,8 @@ promise1.abort("abort").then(value => {
 ### Promise.all abort
 
 ```javascript
-const promise1 = AbortableDelay("resolve at 1s", 1000);
-const promise2 = AbortableDelay("resolve at 2s", 2000);
+const promise1 = new AbortableDelay("resolve at 1s", 1000);
+const promise2 = new AbortableDelay("resolve at 2s", 2000);
 const promiseAll = AbortablePromise.all([promise1, promise2]);
 
 promise1.then(value => {
@@ -182,8 +200,8 @@ setTimeout(() => {
 ### Promise.race abort
 
 ```javascript
-const promise1 = AbortableDelay("resolve at 1s", 1000);
-const promise2 = AbortableDelay("resolve at 2s", 2000);
+const promise1 = new AbortableDelay("resolve at 1s", 1000);
+const promise2 = new AbortableDelay("resolve at 2s", 2000);
 const promiseRace = AbortablePromise.race([promise1, promise2]);
 
 promise1.then(value => {
